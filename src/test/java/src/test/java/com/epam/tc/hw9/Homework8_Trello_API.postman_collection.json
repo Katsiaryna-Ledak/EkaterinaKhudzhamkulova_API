@@ -176,8 +176,9 @@
 								"exec": [
 									"pm.test(\"List name is hw8TestList\", () => {\r",
 									"  const responseJson = pm.response.json();\r",
-									"  pm.expect(responseJson.name).to.eql(\"hw8TestList\");\r",
-									"  pm.expect(responseJson.idBoard).to.eql(\"614218874b70ef18983646ad\");\r",
+									"\r",
+									"  pm.expect(responseJson.name).to.eql(pm.variables.get(\"listName\"));\r",
+									"  pm.expect(responseJson.idBoard).to.eql(pm.variables.get(\"boardID\"));\r",
 									"});"
 								],
 								"type": "text/javascript"
@@ -312,7 +313,7 @@
 								"exec": [
 									"pm.test(\"The response has all properties\", () => {\r",
 									"    const responseJson = pm.response.json();\r",
-									"    pm.expect(responseJson.id).to.eql('61421df1cfa3574f22158bb5');\r",
+									"    pm.expect(responseJson.id).to.eql(pm.variables.get(\"cardID\"));\r",
 									"    pm.expect(responseJson.idList).to.be.a('string');\r",
 									"});"
 								],
