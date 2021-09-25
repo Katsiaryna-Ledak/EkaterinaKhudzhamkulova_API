@@ -1,34 +1,25 @@
 package core;
 
-import static org.hamcrest.Matchers.lessThan;
-
 import beans.BoardType;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import io.restassured.RestAssured;
 import io.restassured.builder.RequestSpecBuilder;
-import io.restassured.builder.ResponseSpecBuilder;
 import io.restassured.http.ContentType;
 import io.restassured.http.Method;
 import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
-import io.restassured.specification.ResponseSpecification;
 import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
-import org.apache.http.HttpStatus;
-import utils.TestData;
+import utils.PropertyReader;
 
-public class BoardService {
+public class BoardService extends CommonService{
 
     public static final URI TRELLO_BOARD_URI = URI.create("https://api.trello.com/1/board/");
 
-    private Method requestMethod;
-    private Map<String, String> parameters;
-
-    private BoardService(Map<String, String> parameters, Method requestMethod) {
-        this.parameters = parameters;
-        this.requestMethod = requestMethod;
+    public BoardService(Method requestMethod, Map<String, String> queryParams) {
+        super(requestMethod, queryParams);
     }
 
     public static BoardApiRequestBuilder requestBuilder() {
@@ -49,11 +40,14 @@ public class BoardService {
             return this;
         }
 
-
         public BoardService buildRequest() {
-            return new BoardService(parameters, requestMethod);
+            return new BoardService(requestMethod, parameters);
         }
 
+        public BoardApiRequestBuilder setId(String id) {
+            parameters.put("id", id);
+            return this;
+        }
     }
 
     public static RequestSpecification requestSpecification() {
@@ -67,8 +61,8 @@ public class BoardService {
     public Response sendRequest(String addPath) {
         return RestAssured
                 .given(requestSpecification()).log().all()
-                .queryParam("key", TestData.getProperty("key"))
-                .queryParam("token", TestData.getProperty("token"))
+                .queryParam("key", PropertyReader.getProperty("key"))
+                .queryParam("token", PropertyReader.getProperty("token"))
                 .queryParams(parameters)
                 .request(requestMethod, TRELLO_BOARD_URI + addPath)
                 .prettyPeek();
@@ -77,27 +71,11 @@ public class BoardService {
     public Response sendRequest() {
         return RestAssured
                 .given(requestSpecification()).log().all()
-                .queryParam("key", TestData.getProperty("key"))
-                .queryParam("token", TestData.getProperty("token"))
+                .queryParam("key", PropertyReader.getProperty("key"))
+                .queryParam("token", PropertyReader.getProperty("token"))
                 .queryParams(parameters)
                 .request(requestMethod, TRELLO_BOARD_URI)
                 .prettyPeek();
-    }
-
-    public static ResponseSpecification goodResponseSpecification() {
-        return new ResponseSpecBuilder()
-                .expectContentType(ContentType.JSON)
-                .expectResponseTime(lessThan(10000L))
-                .expectStatusCode(HttpStatus.SC_OK)
-                .build();
-    }
-
-    public static ResponseSpecification badResponseSpecification() {
-        return new ResponseSpecBuilder()
-                .expectContentType(ContentType.TEXT)
-                .expectResponseTime(lessThan(10000L))
-                .expectStatusCode(HttpStatus.SC_NOT_FOUND)
-                .build();
     }
 
     public static BoardType getBoardFromResponse (Response response) {

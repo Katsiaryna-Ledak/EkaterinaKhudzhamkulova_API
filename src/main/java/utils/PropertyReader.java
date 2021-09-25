@@ -4,7 +4,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Properties;
 
-public class TestData {
+public class PropertyReader {
     protected static FileInputStream fileInputStream;
     protected static Properties PROPERTIES;
     static {

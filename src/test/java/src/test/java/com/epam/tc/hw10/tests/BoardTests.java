@@ -4,35 +4,30 @@ import static core.BoardService.badResponseSpecification;
 import static core.BoardService.getBoardFromResponse;
 import static core.BoardService.goodResponseSpecification;
 import static core.BoardService.requestBuilder;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.notNullValue;
 
+import assertions.BoardAssertions;
 import beans.BoardType;
 import io.restassured.http.Method;
-import org.hamcrest.Matchers;
 import org.testng.annotations.Test;
-import utils.TestData;
+import utils.PropertyReader;
 
-public class TrelloApiTests {
+public class BoardTests extends BaseTest{
 
-    private BoardType testBoard;
+    BoardAssertions assertionsForBoard = new BoardAssertions();
 
     @Test(description = "Creating a new board with specific name")
     public void createBoardTest() {
 
         testBoard = getBoardFromResponse(requestBuilder()
                 .setMethod(Method.POST)
-                .setName(TestData.getProperty("boardName"))
+                .setName(PropertyReader.getProperty("boardName"))
                 .buildRequest()
                 .sendRequest()
                 .then().assertThat()
                 .spec(goodResponseSpecification())
                 .extract().response());
 
-        assertThat("Board was created with different name", testBoard.getName().equals(TestData.getProperty("boardName")));
-        assertThat("Tag id does not exist or is empty", testBoard, Matchers.hasProperty("id", notNullValue()));
-
+        assertionsForBoard.checkBoardNameAfterCreation(testBoard, PropertyReader.getProperty("boardName"));
     }
 
     @Test(dependsOnMethods = "createBoardTest", description = "Getting a board that was created in previous test and check that they are the same")
@@ -46,8 +41,7 @@ public class TrelloApiTests {
                 .spec(goodResponseSpecification())
                 .extract().response());
 
-        assertThat("Response board is not the same as the created board", responseBoard.equals(testBoard));
-
+        assertionsForBoard.checkBoardNameInResponse(responseBoard, testBoard);
     }
 
     @Test(dependsOnMethods = {"createBoardTest"}, description = "Changing the name of the created board")
@@ -55,34 +49,32 @@ public class TrelloApiTests {
 
         BoardType responseBoard = getBoardFromResponse(requestBuilder()
                 .setMethod(Method.PUT)
-                .setName(TestData.getProperty("newBoardName"))
+                .setName(PropertyReader.getProperty("newBoardName"))
                 .buildRequest()
                 .sendRequest(testBoard.getId())
                 .then().assertThat()
                 .spec(goodResponseSpecification())
                 .extract().response());
 
-        assertThat("tag name from response differs from passed name", responseBoard, Matchers.hasProperty("name", equalTo(TestData.getProperty("newBoardName"))));
-
+        assertionsForBoard.checkBoardNameAfterRename(responseBoard, PropertyReader.getProperty("newBoardName"));
     }
 
     @Test(dependsOnMethods = {"createBoardTest", "getBoardTest"}, description = "Deleting created board by ID")
     public void deleteBoardById() {
 
         requestBuilder()
-                .setMethod(Method.DELETE)
-                .buildRequest()
-                .sendRequest(testBoard.getId())
-                .then().assertThat()
-                .spec(goodResponseSpecification());
+            .setMethod(Method.DELETE)
+            .buildRequest()
+            .sendRequest(testBoard.getId())
+            .then().assertThat()
+            .spec(goodResponseSpecification());
 
         requestBuilder()
-                .setMethod(Method.GET)
-                .buildRequest()
-                .sendRequest(testBoard.getId())
-                .then().assertThat()
-                .spec(badResponseSpecification());
-
+            .setMethod(Method.GET)
+            .buildRequest()
+            .sendRequest(testBoard.getId())
+            .then().assertThat()
+            .spec(badResponseSpecification());
     }
 }
 

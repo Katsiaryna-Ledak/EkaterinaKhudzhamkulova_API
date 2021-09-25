@@ -2,7 +2,7 @@
 <suite name = "TrelloApiTests">
     <test name = "test">
         <classes>
-            <class name="src.test.java.com.epam.tc.hw10.tests.TrelloApiTests">
+            <class name="src.test.java.com.epam.tc.hw10.tests.BoardTests">
                 <methods>
                     <include name="createBoardTest"/>
                     <include name="getBoardTest"/>
