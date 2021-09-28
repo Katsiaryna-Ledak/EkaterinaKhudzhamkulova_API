@@ -1,0 +1,16 @@
+<!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd" >
+<suite name = "TrelloApiTests">
+    <test name = "test">
+        <classes>
+            <class name="src.test.java.com.epam.tc.hw10.tests.BoardTests">
+                <methods>
+                    <include name="createBoardTest"/>
+                    <include name="getBoardTest"/>
+                    <include name="updateBoardTest"/>
+                    <include name="deleteBoardById"/>
+                </methods>
+            </class>
+
+        </classes>
+    </test>
+</suite>
