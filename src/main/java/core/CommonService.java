@@ -16,10 +16,10 @@ public class CommonService {
     protected Method requestMethod;
     protected Map<String, String> parameters;
 
-    protected static String TRELLO_BOARD_URI = "https://api.trello.com";
-    protected static String BOARDS_URI = "/1/boards/";
+    protected static String TRELLO_URI = "https://api.trello.com/1";
+    protected static String BOARDS_URI = "/boards/";
 
-    public  CommonService() {}
+    public CommonService() {}
 
     public CommonService(Method requestMethod, Map<String, String> queryParams) {
         this.requestMethod = requestMethod;
@@ -29,7 +29,7 @@ public class CommonService {
     public RequestSpecification requestSpecification() {
         RestAssured.enableLoggingOfRequestAndResponseIfValidationFails();
         return new RequestSpecBuilder()
-            .setBaseUri(TRELLO_BOARD_URI)
+            .setBaseUri(TRELLO_URI)
             .setContentType(ContentType.JSON)
             .addQueryParam("key", PropertyReader.getProperty("key"))
             .addQueryParam("token", PropertyReader.getProperty("token"))
@@ -41,7 +41,6 @@ public class CommonService {
             given().spec(requestSpecification()).when().request(method, path)
                    .then().statusCode(200).extract().response();
     }
-
 
     public Response requestWithParams(Method method, String path, Map<String, String> parameters) {
         return

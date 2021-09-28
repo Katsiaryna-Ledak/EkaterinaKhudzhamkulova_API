@@ -7,6 +7,11 @@ import java.util.Properties;
 public class PropertyReader {
     protected static FileInputStream fileInputStream;
     protected static Properties PROPERTIES;
+
+    public static String getProperty(String key) {
+        return PROPERTIES.getProperty(key);
+    }
+
     static {
         try {
             fileInputStream = new FileInputStream("src/test/resources/TestData.properties");
@@ -23,8 +28,5 @@ public class PropertyReader {
                 }
             }
         }
-    }
-    public static String getProperty(String key) {
-        return PROPERTIES.getProperty(key);
     }
 }

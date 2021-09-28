@@ -13,8 +13,7 @@ public class BoardTests extends BaseTest{
     @Test(description = "Creating a new board with specific name")
     public void createBoardTest() {
 
-        testBoard = boardService.createBoard(parameters);
-        assertionsForBoard.checkBoardNameAfterCreation(testBoard, PropertyReader.getProperty("boardName"));
+        assertionsForBoard.checkBoardNameAfterCreation(testBoard, randomBoardName);
     }
 
     @Test(dependsOnMethods = "createBoardTest", description = "Getting a board that was created in previous test and check that they are the same")
