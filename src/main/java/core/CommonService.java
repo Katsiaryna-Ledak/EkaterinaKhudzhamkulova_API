@@ -1,39 +1,51 @@
 package core;
 
-import static org.hamcrest.Matchers.lessThan;
+import static io.restassured.RestAssured.given;
 
-import io.restassured.builder.ResponseSpecBuilder;
+import io.restassured.RestAssured;
+import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.http.ContentType;
 import io.restassured.http.Method;
-import io.restassured.specification.ResponseSpecification;
+import io.restassured.response.Response;
+import io.restassured.specification.RequestSpecification;
 import java.util.Map;
-import org.apache.http.HttpStatus;
+import utils.PropertyReader;
 
 public class CommonService {
 
     protected Method requestMethod;
     protected Map<String, String> parameters;
 
+    protected static String TRELLO_BOARD_URI = "https://api.trello.com";
+    protected static String BOARDS_URI = "/1/boards/";
+
+    public  CommonService() {}
+
     public CommonService(Method requestMethod, Map<String, String> queryParams) {
         this.requestMethod = requestMethod;
         this.parameters = queryParams;
     }
 
-    public static ResponseSpecification goodResponseSpecification() {
-        return new ResponseSpecBuilder()
-            .expectContentType(ContentType.JSON)
-            .expectResponseTime(lessThan(10000L))
-            .expectStatusCode(HttpStatus.SC_OK)
+    public RequestSpecification requestSpecification() {
+        RestAssured.enableLoggingOfRequestAndResponseIfValidationFails();
+        return new RequestSpecBuilder()
+            .setBaseUri(TRELLO_BOARD_URI)
+            .setContentType(ContentType.JSON)
+            .addQueryParam("key", PropertyReader.getProperty("key"))
+            .addQueryParam("token", PropertyReader.getProperty("token"))
             .build();
     }
 
-    public static ResponseSpecification badResponseSpecification() {
-        return new ResponseSpecBuilder()
-            .expectContentType(ContentType.TEXT)
-            .expectResponseTime(lessThan(10000L))
-            .expectStatusCode(HttpStatus.SC_NOT_FOUND)
-            .build();
+    public Response requestWithNoParams(Method method, String path) {
+        return
+            given().spec(requestSpecification()).when().request(method, path)
+                   .then().statusCode(200).extract().response();
     }
 
 
+    public Response requestWithParams(Method method, String path, Map<String, String> parameters) {
+        return
+            given().spec(requestSpecification()).queryParams(parameters).when().request(method, path)
+                   .then().statusCode(200).extract().response();
+    }
 }
