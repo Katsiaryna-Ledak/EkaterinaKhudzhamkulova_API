@@ -6,11 +6,12 @@ import io.restassured.http.Method;
 import io.restassured.response.Response;
 import java.util.Map;
 
-public class BoardService extends CommonService{
+public class BoardService extends CommonService {
 
     public BoardService() {
         super();
     }
+
     public BoardService(Method requestMethod, Map<String, String> queryParams) {
         super(requestMethod, queryParams);
     }

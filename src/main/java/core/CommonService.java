@@ -19,7 +19,8 @@ public class CommonService {
     protected static String TRELLO_URI = "https://api.trello.com/1";
     protected static String BOARDS_URI = "/boards/";
 
-    public CommonService() {}
+    public CommonService() {
+    }
 
     public CommonService(Method requestMethod, Map<String, String> queryParams) {
         this.requestMethod = requestMethod;

@@ -12,7 +12,8 @@ public class RandomStringGenerator {
 
         String generatedString = random.ints(leftLimit, rightLimit + 1)
                                        .limit(targetStringLength)
-                                       .collect(StringBuilder::new, StringBuilder::appendCodePoint, StringBuilder::append)
+                                       .collect(StringBuilder::new, StringBuilder::appendCodePoint,
+                                           StringBuilder::append)
                                        .toString();
 
         return generatedString;

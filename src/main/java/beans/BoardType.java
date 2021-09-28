@@ -32,5 +32,4 @@ public class BoardType {
     public void setName(String name) {
         this.name = name;
     }
-
 }

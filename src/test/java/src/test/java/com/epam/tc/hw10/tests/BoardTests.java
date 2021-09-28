@@ -6,7 +6,7 @@ import io.restassured.response.Response;
 import org.testng.annotations.Test;
 import utils.PropertyReader;
 
-public class BoardTests extends BaseTest{
+public class BoardTests extends BaseTest {
 
     BoardAssertions assertionsForBoard = new BoardAssertions();
 
@@ -16,7 +16,8 @@ public class BoardTests extends BaseTest{
         assertionsForBoard.checkBoardNameAfterCreation(testBoard, randomBoardName);
     }
 
-    @Test(dependsOnMethods = "createBoardTest", description = "Getting a board that was created in previous test and check that they are the same")
+    @Test(dependsOnMethods = "createBoardTest",
+          description = "Getting a board that was created in previous test and check that they are the same")
     public void getBoardTest() {
 
         BoardType responseBoard = boardService.getBoard(testBoard.getId());
